@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 1</title>
+    <script src="node_modules/web3/dist/web3.min.js"></script>
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <section class="text-gray-700 body-font relative">
+        <div class="container px-5 py-24 mx-auto">
+          <div class="flex flex-col text-center w-full mb-12">
+            <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">Instructor</h1>
+          </div>
+          <div class="lg:w-1/2 md:w-2/3 mx-auto">
+            <div class="flex flex-wrap -m-2">
+                <div class="p-2 w-full">
+                    <center><p id="instructor"></p></center>
+                  </div>
+              <div class="p-2 w-1/2">
+                <input id="name" class="w-full bg-gray-100 rounded border border-gray-400 focus:outline-none focus:border-indigo-500 text-base px-4 py-2" placeholder="Name" type="text">
+              </div>
+              <div class="p-2 w-1/2">
+                <input id="age" class="w-full bg-gray-100 rounded border border-gray-400 focus:outline-none focus:border-indigo-500 text-base px-4 py-2" placeholder="Age" type="text">
+              </div>
+              <div class="p-2 w-full">
+                <button id="button" class="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Submit</button>
+              </div>
+              <div class="p-2 w-full pt-8 mt-8 border-t border-gray-200 text-center">
+                <a class="text-indigo-500">example@email.com</a>
+                
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+      <script>
+          if (typeof web3 != 'undefined') {
+              web3 = new Web3(web3.currentProvider);
+          }
+          else{
+              web3 = new Web3(new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545"))
+          }
+
+          web3.eth.defaultAccount = web3.eth.accounts[0];
+
+          var abi = [
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_fName",
+				"type": "string"
+			},
+			{
+				"name": "_age",
+				"type": "uint256"
+			}
+		],
+		"name": "setInstructor",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getInstructor",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
+
+          var ProjectContract = web3.eth.contract(abi)
+
+          var Project = ProjectContract.at('0xc281b72244C19f47A78519E349C20530412f6Cfa');
+          //npm install ethereumjs-testrpc web3@0.20.1
+          console.log(Project)
+
+          Project.getInstructor(function(error, result) {
+              if(!error) {
+                  $('#instructor').html(result[0]+" "+result[1]+" Year Old");
+                  console.log("Name",result[0])
+                  console.log("Age",result[1])
+              }
+              else{
+                  console.log(error);
+              }
+          })
+
+          $("#button").click(function() {
+              Project.setInstructor($("#name").val(),$("#age").val());
+          })
+
+      </script>
+    
+</body>
+</html>
